@@ -6,24 +6,49 @@
 load response_times_data.mat
 t=10
 
-inside_kernel = (responses.(1)-t)/
-kissa = ksdensity(,'Bandwidth',0.05);
+iqr_data = iqr(responses.(1))
+h= 0.9*min(std(responses.(1)),iqr_data/1.34)*numel(responses.(1))^(-1/5);
+
+inside_kernel = (responses.(1)-t)/h;
+
+kissa = ksdensity(inside_kernel,'Bandwidth',h)*(P)/ksdensity(inside_kernel,'Bandwidth',h);
+
+function k = kernel_try1(z,t1)
+    %iqr for silverman
+    iqr_data = iqr(responses.(1));
+    %silverman h
+    h= 0.9*min(std(responses.(1)),iqr_data/1.34)*numel(responses.(1))^(-1/5);
+    %what goes inside the kernel density function(?)
+    inside_kernel = (responses.(1)-t)/h;
+    %indicator element
+    p_ind = 0;
+    if (responses.(1)-responses.(2) < z) 
+        p_ind = 1;
+    end
+    ksdensity(inside_kernel,'Bandwidth',h)*p_ind/ksdensity(inside_kernel,'Bandwidth',h);
+end
+
+
+%rho is responses.(2)
+%tau is responses.(1)
 
 %Silverman:
 %iqr 
-h = std(data)*(4/3/numel(data))^(1/5);
 
-
-
-% True
-phi = @(x) exp(-.5*x.^2)/sqrt(2*pi);       % Normal Density
-% Kernel
-h = std(data)*(4/3/numel(data))^(1/5);     % Bandwidth estimated by Silverman's Rule of Thumb
-kernel = @(x) mean(phi((x-data)/h)/h);     % Kernel Density
-kpdf = @(x) arrayfun(kernel,x);            % Elementwise application
-% Plot
-figure(2), clf, hold on
-x = linspace(-25,+25,1000);                % Linear Space
-plot(x,tpdf(x))                            % Plot True Density
-plot(x,kpdf(x))                            % Plot Kernel Density with Silverman's Rule of Thumb
-kde(data)                                  % Plot Kernel Density with Solve-the-Equation Bandwidth
+% 
+% h = std(data)*(4/3/numel(data))^(1/5);
+% 
+% 
+% 
+% % True
+% phi = @(x) exp(-.5*x.^2)/sqrt(2*pi);       % Normal Density
+% % Kernel
+% h = std(data)*(4/3/numel(data))^(1/5);     % Bandwidth estimated by Silverman's Rule of Thumb
+% kernel = @(x) mean(phi((x-data)/h)/h);     % Kernel Density
+% kpdf = @(x) arrayfun(kernel,x);            % Elementwise application
+% % Plot
+% figure(2), clf, hold on
+% x = linspace(-25,+25,1000);                % Linear Space
+% plot(x,tpdf(x))                            % Plot True Density
+% plot(x,kpdf(x))                            % Plot Kernel Density with Silverman's Rule of Thumb
+% kde(data)                                  % Plot Kernel Density with Solve-the-Equation Bandwidth
