@@ -43,40 +43,32 @@ inside_kernel = (responses.(1)-t)/h;
 phi = @(x) exp(-.5*(x-mean(inside_kernel)).^2)/(std(inside_kernel)*sqrt(2*pi));       % Normal Density
 
 
+%k1 = phi(inside_kernel)
+
+
 kernel = @(x) phi((x-t)/h)/h;
 
 %%testi
-% k_dens = [];
-% for i=1:5000
-%     k_dens(i)=kernel(inside_kernel(i))
-% end
-
-
-kpdf = @(x) arrayfun(kernel,x);
-
-kernel_nom = kpdf(inside_kernel)*p_ind;
-kernel_denom = kpdf(inside_kernel);
-sum(kernel_denom,1)
-
-%sum over the vectors
-kernel_nom_sum = sum(kernel_nom,1);
-kernel_denom_sum = sum(kernel_nom,1)
-% divide the sums
-out = kernel_nom_sum/kernel_denom_sum;
-
-
-
-
-
-
-
+k_dens = [];
+for i=1200:1400
+    k_dens(end+1)=kernel(i)
+end
 
 % 
-% kernel_nom = mean(phi((respons1-t)/h)/h)*p_ind;
-% kernel_denom = mean(phi((respons1-t)/h)/h)*p_ind;
-
-% % calculate the nominator and denominator without sums
-% kernel_nom = ksdensity(inside_kernel,'Bandwidth',h)*p_ind;
-% kernel_denom = ksdensity(inside_kernel,'Bandwidth',h);
-% %these should then be 5000x1 
-% % then sum over the rows
+% kpdf = @(x) arrayfun(kernel,x);
+% 
+% kernel_nom = kpdf(respons1)*p_ind;
+% kernel_denom = kpdf(respons1);
+% 
+% % 
+% % kernel_nom = mean(phi((respons1-t)/h)/h)*p_ind;
+% % kernel_denom = mean(phi((respons1-t)/h)/h)*p_ind;
+% 
+% % % calculate the nominator and denominator without sums
+% % kernel_nom = ksdensity(inside_kernel,'Bandwidth',h)*p_ind;
+% % kernel_denom = ksdensity(inside_kernel,'Bandwidth',h);
+% % %these should then be 5000x1 
+% % % then sum over the rows
+% kernel_nom_sum = sum(kernel_nom,1);
+% kernel_denom_sum = sum(kernel_nom,1);
+% out = kernel_nom_sum/kernel_denom_sum
