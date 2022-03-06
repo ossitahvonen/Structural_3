@@ -10,7 +10,6 @@ for i=1:400
     k = kernel_try1(i,t, resp1, resp2);
     values(end+1) = k(:,1);
 end
-
 function [out,z] = kernel_try1(z,t1, respons1, respons2)
     
     %calculate silverman h
