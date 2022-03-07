@@ -48,3 +48,4 @@ function [out,z] = kernel_try1(z,t1, respons1, respons2)
     % divide the sums
     out = kernel_nom_sum/kernel_denom_sum;
 end
+stairs(z, values)
